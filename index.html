@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Understanding the Gibbs Reflective Cycle</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    /* Minimal extras for interactions */
+    @media (max-width: 900px){ .grid.cols-3{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width: 640px){ .grid.cols-3{grid-template-columns:1fr} }
+    .flip{height:300px;margin:12px 0}
+    .flip-face{display:flex;align-items:center;justify-content:center;text-align:center;padding:22px;line-height:1.6}
+
+    .grid{display:grid;gap:18px}
+    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .card-lite{border:1px solid var(--border);border-radius:14px;padding:14px;background:#fff;cursor:pointer}
+    .flip{perspective:1000px}
+    .flip-inner{position:relative;transition:transform .4s;transform-style:preserve-3d}
+    .flip.show .flip-inner{transform:rotateY(180deg)}
+    .flip-face{position:relative;min-height:120px}
+    .flip-front,.flip-back{backface-visibility:hidden;position:absolute;inset:0;padding:14px;border-radius:14px;border:1px dashed #cbd5e1}
+    .flip-back{transform:rotateY(180deg);background:#f8fafc}
+    /* Drag & drop */
+    .draggable{user-select:none;border:1px solid var(--brand);padding:8px 10px;border-radius:10px;display:inline-block;background:#eef6ff;cursor:grab;margin:6px 6px 0 0}
+    .dropzone{min-height:46px;border:2px dashed #cbd5e1;border-radius:10px;padding:8px;margin-top:6px;background:#f8fafc}
+    .dropzone.over{border-color:var(--brand)}
+    .pair{display:flex;gap:12px;align-items:flex-start;margin:10px 0}
+    .def{flex:1}
+    .def h4{margin:0 0 6px;font-size:28px}
+    .small{font-size:22px;color:var(--muted)}
+    /* flashcard list spacing */
+    .flip-back ul{margin:0;padding-left:22px}
+    .flip-back li{margin:6px 0}
+  </style>
+</head>
+<body>
+<header class="app-header">
+  <div class="wrap">
+<img src="media/logo.png" alt="Logo" class="logo">
+    <h1>The Gibbs Reflective Cycle</h1>
+    <p class="subtitle">Seven-slide micro-course for foundation students</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="card">
+    <!-- Slide 1 -->
+    <section class="slide active" data-slide="0">
+      <h2>What is reflection and why use Gibbs?</h2>
+      <p>Reflection is a structured way to learn from experience. The Gibbs Reflective Cycle provides a practical, step-by-step framework to review an event, understand it, and decide how to improve next time.</p>
+      <ul>
+        <li>Turn experience into actionable learning</li>
+        <li>Strengthen academic writing and self-awareness</li>
+        <li>Plan concrete, realistic next steps</li>
+      </ul>
+    </section>
+
+    <!-- Slide 2 -->
+    <section class="slide" data-slide="1">
+      <h2>The six stages at a glance</h2>
+      <ol>
+        <li><strong>Description</strong> — What happened?</li>
+        <li><strong>Feelings</strong> — What were you thinking and feeling?</li>
+        <li><strong>Evaluation</strong> — What went well, and what didn’t?</li>
+        <li><strong>Analysis</strong> — Why did it happen? What does theory suggest?</li>
+        <li><strong>Conclusion</strong> — What have you learned? What else could you have done?</li>
+        <li><strong>Action Plan</strong> — What will you do next time, specifically?</li>
+      </ol>
+      <p class="small">Tip: Use concise, factual Description; be honest but brief with Feelings; be balanced in Evaluation; connect ideas in Analysis; be specific in Conclusion and Action Plan.</p>
+    </section>
+
+    <!-- Slide 3: True/False gating -->
+    <section class="slide" data-slide="2">
+      <h2>Check-point: True or False</h2>
+      <p><strong>Statement:</strong> “The Gibbs Reflective Cycle is only for academic essays and is not useful for real-life professional learning.”</p>
+      <form id="tfForm">
+        <label><input type="radio" name="tf1" value="true"> True</label><br/>
+        <label><input type="radio" name="tf1" value="false" data-correct="1"> False</label>
+      </form>
+      <p id="actMsg" class="msg" role="status" aria-live="polite"></p>
+      <p class="small">You must answer correctly to continue.</p>
+    </section>
+
+    <!-- Slide 4: Flashcards -->
+    <section class="slide" data-slide="3">
+      <h2>Stage keywords — flip the cards</h2>
+      <div class="grid cols-3">
+        <!-- Description -->
+        <div class="flip" data-flip>
+          <div class="flip-inner">
+            <div class="flip-front flip-face"><strong>Description</strong><br/><span class="small">Click to reveal helpful stems</span></div>
+            <div class="flip-back flip-face">
+              <ul>
+                <li>“Firstly… then I…”</li>
+                <li>“The context was…”</li>
+                <li>“The task/goal was…”</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- Feelings -->
+        <div class="flip" data-flip>
+          <div class="flip-inner">
+            <div class="flip-front flip-face"><strong>Feelings</strong><br/><span class="small">Click to reveal examples</span></div>
+            <div class="flip-back flip-face">
+              <ul>
+                <li>“Nervous but excited”</li>
+                <li>“Anxious / uncertain”</li>
+                <li>“Relieved / proud”</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- Evaluation -->
+        <div class="flip" data-flip>
+          <div class="flip-inner">
+            <div class="flip-front flip-face"><strong>Evaluation</strong><br/><span class="small">Click to reveal stems</span></div>
+            <div class="flip-back flip-face">
+              <ul>
+                <li>“What went well was…”</li>
+                <li>“What didn’t go well was…”</li>
+                <li>“The reason for this could have been…”</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- Analysis -->
+        <div class="flip" data-flip>
+          <div class="flip-inner">
+            <div class="flip-front flip-face"><strong>Analysis</strong><br/><span class="small">Click to reveal links</span></div>
+            <div class="flip-back flip-face">
+              <ul>
+                <li>“This suggests that…”</li>
+                <li>“This links to [theory]…”</li>
+                <li>“A possible cause was…”</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- Conclusion -->
+        <div class="flip" data-flip>
+          <div class="flip-inner">
+            <div class="flip-front flip-face"><strong>Conclusion</strong><br/><span class="small">Click to reveal stems</span></div>
+            <div class="flip-back flip-face">
+              <ul>
+                <li>“I learned that…”</li>
+                <li>“Next time I would…”</li>
+                <li>“I should avoid…”</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- Action Plan -->
+        <div class="flip" data-flip>
+          <div class="flip-inner">
+            <div class="flip-front flip-face"><strong>Action Plan</strong><br/><span class="small">Click to reveal steps</span></div>
+            <div class="flip-back flip-face">
+              <ul>
+                <li>“In future, I will…”</li>
+                <li>“By [date], I’ll…”</li>
+                <li>“Measure this by…”</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5: Ordering -->
+    <section class="slide" data-slide="4">
+      <h2>Put the stages in the correct order</h2>
+      <p class="small">Drag the tiles into the dropzone from first to last.</p>
+      <div id="order-bank" class="activity-box">
+        <span class="draggable" draggable="true">Conclusion</span>
+        <span class="draggable" draggable="true">Action Plan</span>
+        <span class="draggable" draggable="true">Description</span>
+        <span class="draggable" draggable="true">Analysis</span>
+        <span class="draggable" draggable="true">Evaluation</span>
+        <span class="draggable" draggable="true">Feelings</span>
+      </div>
+      <div class="grid cols-3">
+        <div id="pairsWrap"><div class="small">1</div><div class="dropzone" data-slot="1"></div></div>
+        <div><div class="small">2</div><div class="dropzone" data-slot="2"></div></div>
+        <div><div class="small">3</div><div class="dropzone" data-slot="3"></div></div>
+        <div><div class="small">4</div><div class="dropzone" data-slot="4"></div></div>
+        <div><div class="small">5</div><div class="dropzone" data-slot="5"></div></div>
+        <div><div class="small">6</div><div class="dropzone" data-slot="6"></div></div>
+      </div>
+      <p id="orderMsg" class="msg" role="status" aria-live="polite"></p>
+      <button type="button" class="btn" id="checkOrder">Check order</button>
+    </section>
+
+    <!-- Slide 6: Matching -->
+    <section class="slide" data-slide="5">
+      <h2>Match each stage to its function</h2>
+      <p class="small">Drag each stage to the correct definition.</p>
+      <div id="match-bank">
+        <span class="draggable" draggable="true" data-key="Description">Description</span>
+        <span class="draggable" draggable="true" data-key="Feelings">Feelings</span>
+        <span class="draggable" draggable="true" data-key="Evaluation">Evaluation</span>
+        <span class="draggable" draggable="true" data-key="Analysis">Analysis</span>
+        <span class="draggable" draggable="true" data-key="Conclusion">Conclusion</span>
+        <span class="draggable" draggable="true" data-key="Action Plan">Action Plan</span>
+      </div>
+      <div>
+        <div class="pair">
+          <div class="def"><h4>Identify what happened</h4><div class="dropzone" data-accept="Description"></div></div>
+        </div>
+        <div class="pair">
+          <div class="def"><h4>Express thoughts and emotions at the time</h4><div class="dropzone" data-accept="Feelings"></div></div>
+        </div>
+        <div class="pair">
+          <div class="def"><h4>Judge what was effective or ineffective</h4><div class="dropzone" data-accept="Evaluation"></div></div>
+        </div>
+        <div class="pair">
+          <div class="def"><h4>Explain why things happened, linking to theory</h4><div class="dropzone" data-accept="Analysis"></div></div>
+        </div>
+        <div class="pair">
+          <div class="def"><h4>Summarise learning and alternative options</h4><div class="dropzone" data-accept="Conclusion"></div></div>
+        </div>
+        <div class="pair">
+          <div class="def"><h4>Plan specific, timed improvements</h4><div class="dropzone" data-accept="Action Plan"></div></div>
+        </div>
+      </div>
+      <p id="matchMsg" class="msg" role="status" aria-live="polite"></p>
+      <button type="button" class="btn" id="checkMatch">Check matches</button>
+    </section>
+
+    <!-- Slide 7: 10-question MCQ -->
+    <section class="slide" data-slide="6">
+      <h2>Final quiz (10 questions)</h2>
+      <form id="quizForm">
+        <fieldset>
+          <legend>1) Which stage asks “What happened?”</legend>
+          <label><input type="radio" name="q1" value="a"> Feelings</label><br/>
+          <label><input type="radio" name="q1" value="b" data-correct="1"> Description</label><br/>
+          <label><input type="radio" name="q1" value="c"> Evaluation</label>
+        </fieldset>
+        <fieldset>
+          <legend>2) Which stage focuses on emotions at the time?</legend>
+          <label><input type="radio" name="q2" value="a" data-correct="1"> Feelings</label><br/>
+          <label><input type="radio" name="q2" value="b"> Analysis</label><br/>
+          <label><input type="radio" name="q2" value="c"> Conclusion</label>
+        </fieldset>
+        <fieldset>
+          <legend>3) “What went well / not well?” belongs to…</legend>
+          <label><input type="radio" name="q3" value="a" data-correct="1"> Evaluation</label><br/>
+          <label><input type="radio" name="q3" value="b"> Analysis</label><br/>
+          <label><input type="radio" name="q3" value="c"> Action Plan</label>
+        </fieldset>
+        <fieldset>
+          <legend>4) “Why did it happen?” and links to theory belong to…</legend>
+          <label><input type="radio" name="q4" value="a"> Conclusion</label><br/>
+          <label><input type="radio" name="q4" value="b" data-correct="1"> Analysis</label><br/>
+          <label><input type="radio" name="q4" value="c"> Description</label>
+        </fieldset>
+        <fieldset>
+          <legend>5) Which stage summarises learning and alternative actions?</legend>
+          <label><input type="radio" name="q5" value="a" data-correct="1"> Conclusion</label><br/>
+          <label><input type="radio" name="q5" value="b"> Evaluation</label><br/>
+          <label><input type="radio" name="q5" value="c"> Action Plan</label>
+        </fieldset>
+        <fieldset>
+          <legend>6) Which stage converts learning into concrete next steps?</legend>
+          <label><input type="radio" name="q6" value="a" data-correct="1"> Action Plan</label><br/>
+          <label><input type="radio" name="q6" value="b"> Description</label><br/>
+          <label><input type="radio" name="q6" value="c"> Feelings</label>
+        </fieldset>
+        <fieldset>
+          <legend>7) Choose the best sequence:</legend>
+          <label><input type="radio" name="q7" value="a" data-correct="1"> Description → Feelings → Evaluation → Analysis → Conclusion → Action Plan</label><br/>
+          <label><input type="radio" name="q7" value="b"> Description → Evaluation → Feelings → Analysis → Action Plan → Conclusion</label><br/>
+          <label><input type="radio" name="q7" value="c"> Feelings → Description → Evaluation → Analysis → Conclusion → Action Plan</label>
+        </fieldset>
+        <fieldset>
+          <legend>8) Which phrase best fits the <em>Evaluation</em> stage?</legend>
+          <label><input type="radio" name="q8" value="a"> “Firstly… then I…”</label><br/>
+          <label><input type="radio" name="q8" value="b" data-correct="1"> “What went well was…”</label><br/>
+          <label><input type="radio" name="q8" value="c"> “By [date], I’ll…”</label>
+        </fieldset>
+        <fieldset>
+          <legend>9) Which phrase best fits the <em>Action Plan</em> stage?</legend>
+          <label><input type="radio" name="q9" value="a"> “This suggests that…”</label><br/>
+          <label><input type="radio" name="q9" value="b"> “I learned that…”</label><br/>
+          <label><input type="radio" name="q9" value="c" data-correct="1"> “In future, I will…”</label>
+        </fieldset>
+        <fieldset>
+          <legend>10) In a short reflection, where should you connect to academic theory?</legend>
+          <label><input type="radio" name="q10" value="a" data-correct="1"> Analysis</label><br/>
+          <label><input type="radio" name="q10" value="b"> Description</label><br/>
+          <label><input type="radio" name="q10" value="c"> Feelings</label>
+        </fieldset>
+        <button type="button" id="submitQuiz" class="btn">Submit Quiz</button>
+        <p id="quizMsg" class="msg" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- Slide 8: Course complete + video -->
+    <section class="slide" data-slide="7">
+      <h2>Course Complete</h2>
+      <p>After watching this video you may close the window and leave the course.</p>
+
+      <video id="exitVideo" controls preload="metadata" poster="assets/complete-poster.jpg">
+        <source src="media/complete.mp4" type="video/mp4">
+        <!-- Optional but recommended captions: create media/complete.vtt and keep this line -->
+        <track kind="captions" src="media/complete.vtt" srclang="en" label="English" default>
+        Sorry, your browser doesn’t support embedded video.
+      </video>
+
+      <p class="small">Your progress is saved automatically.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="app-footer">
+  <div class="wrap footer-inner">
+    <button id="backBtn" type="button" class="btn btn-secondary">Back</button>
+    <span id="navStatus">Page <span id="slideNum">1</span> of <span id="slideCount">7</span></span>
+    <button id="nextBtn" type="button" class="btn">Next</button>
+  </div>
+</footer>
+
+<script src="js/scorm_api.js"></script>
+<script src="js/module.js"></script>
+</body>
+</html>
