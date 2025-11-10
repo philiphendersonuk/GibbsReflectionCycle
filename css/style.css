@@ -13,7 +13,7 @@ legend{font-weight:600}
 .subtitle{margin:0;color:var(--muted)}
 .app-header{background:linear-gradient(135deg,#f7797d 0%,#fcb69f 100%);border-bottom:1px solid var(--border);padding:20px 0}
 header { position: relative; display: flex; justify-content: space-between; align-items: center; }
-.logo { position:absolute; top:10px; right:16px; height:60px; }
+.logo { position:absolute; top:10px; right:16px; height:200px; }
 .app-footer{background:linear-gradient(135deg,#eef2f7 0%,#e6f0ff 100%);border-top:1px solid var(--border);padding:14px 0}
 .footer-inner{display:flex;gap:14px;align-items:center;justify-content:center}
 .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;margin:20px 0;box-shadow:0 8px 24px rgba(2,6,23,0.06)}
