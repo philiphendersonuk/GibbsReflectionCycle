@@ -102,3 +102,53 @@ textarea{width:100%;font-size:22px;padding:10px;border:1px solid var(--border);b
   font-size: 0.8em;
   line-height: 1.4;
 }
+/* ------------------------------ */
+/* MOBILE RESPONSIVE FIXES       */
+/* ------------------------------ */
+
+/* Scale typography down on small screens */
+@media (max-width: 768px) {
+  body { font-size: 18px; }
+  h1 { font-size: 28px; }
+  h2 { font-size: 24px; }
+  p, li, label, legend { font-size: 18px; }
+  #navStatus { font-size: 16px; }
+  .btn { font-size: 18px; padding: 8px 14px; }
+}
+
+/* Very small phones (e.g., iPhone SE) */
+@media (max-width: 480px) {
+  body { font-size: 16px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 20px; }
+  p, li, label, legend { font-size: 16px; }
+  .card { padding: 16px; }
+}
+
+/* Make flip-cards adjust naturally */
+@media (max-width: 768px) {
+  .slide[data-slide="3"] .flip {
+    height: auto;
+    min-height: 180px;
+  }
+
+  .slide[data-slide="3"] .flip-inner {
+    height: auto;
+  }
+}
+
+/* Allow grids to collapse earlier */
+@media (max-width: 768px) {
+  .grid.cols-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .grid.cols-3 { grid-template-columns: 1fr; }
+}
+
+/* Make videos truly responsive */
+video,
+#exitVideo {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+}
