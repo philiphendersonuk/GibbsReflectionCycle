@@ -268,6 +268,8 @@ textarea {
 
 .draggable {
   user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
   border: 1px solid var(--brand);
   padding: 8px 10px;
   border-radius: 10px;
@@ -275,6 +277,12 @@ textarea {
   background: #eef6ff;
   cursor: grab;
   margin: 6px 6px 0 0;
+}
+
+/* Selected tile (tap-to-move highlight) */
+.draggable.selected {
+  outline: 3px solid var(--brand-dark);
+  background: #dbeafe;
 }
 
 .dropzone {
@@ -323,21 +331,30 @@ textarea {
 /* RESPONSIVE / MOBILE FIXES      */
 /* ------------------------------ */
 
-/* Tablets: collapse 3-col to 2-col globally */
+/* Collapse 3-column grids to 2-column globally */
 @media (max-width: 900px) {
   .grid.cols-3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* ▼ SPECIFIC FIX: Flip-cards become 1-column at ≤900px */
+/* Flip-cards become 1-column on tablet & mobile */
 @media (max-width: 900px) {
   .slide[data-slide="3"] .grid {
     grid-template-columns: 1fr; /* 6 rows */
   }
 
+  .slide[data-slide="3"] .flip {
+    height: auto;
+    min-height: 180px;
+  }
+
+  .slide[data-slide="3"] .flip-inner {
+    height: auto;
+  }
+
   .slide[data-slide="3"] .flip-face {
-    padding: 20px; /* more breathing room */
+    padding: 20px;
   }
 }
 
@@ -383,15 +400,6 @@ textarea {
 
   .logo {
     height: 140px;
-  }
-
-  .slide[data-slide="3"] .flip {
-    height: auto;
-    min-height: 180px;
-  }
-
-  .slide[data-slide="3"] .flip-inner {
-    height: auto;
   }
 }
 
@@ -444,7 +452,7 @@ textarea {
   }
 }
 
-/* Videos responsive always */
+/* Videos always responsive */
 
 video,
 #exitVideo {
