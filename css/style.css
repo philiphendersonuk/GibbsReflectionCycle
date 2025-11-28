@@ -25,7 +25,7 @@ body {
   color: var(--text);
   background: var(--bg);
   line-height: 1.7;
-  font-size: 28px; /* desktop default – scaled down on mobile below */
+  font-size: 28px; /* desktop default */
 }
 
 h1 {
@@ -194,7 +194,7 @@ textarea {
   color: var(--muted);
 }
 
-/* Grid layout (used by flashcards and ordering) */
+/* Grid layout */
 
 .grid {
   display: grid;
@@ -209,7 +209,7 @@ textarea {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-/* Flip cards – base desktop styling for slide 3 */
+/* Flip cards */
 
 .slide[data-slide="3"] .grid {
   display: grid;
@@ -260,35 +260,11 @@ textarea {
   line-height: 1.4;
 }
 
-/* When JS toggles the "show" class (from module.js) */
 .slide[data-slide="3"] .flip.show .flip-inner {
   transform: rotateY(180deg);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Legacy ".flipped" support if ever used */
-.slide[data-slide="3"] .flip.flipped .flip-inner {
-  transform: rotateY(180deg);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-}
-
-.slide[data-slide="3"] .flip:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
-}
-
-.slide[data-slide="3"] .flip-face ul {
-  margin: 0;
-  padding-left: 1.2em;
-  list-style-position: inside;
-}
-
-.slide[data-slide="3"] .flip-face li {
-  line-height: 1.4;
-  font-size: 0.95em;
-}
-
-/* Drag & drop activities (ordering + matching) */
+/* Drag & drop */
 
 .draggable {
   user-select: none;
@@ -347,14 +323,25 @@ textarea {
 /* RESPONSIVE / MOBILE FIXES      */
 /* ------------------------------ */
 
-/* Tablets and small laptops */
+/* Tablets: collapse 3-col to 2-col globally */
 @media (max-width: 900px) {
   .grid.cols-3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* General tablet breakpoint */
+/* ▼ SPECIFIC FIX: Flip-cards become 1-column at ≤900px */
+@media (max-width: 900px) {
+  .slide[data-slide="3"] .grid {
+    grid-template-columns: 1fr; /* 6 rows */
+  }
+
+  .slide[data-slide="3"] .flip-face {
+    padding: 20px; /* more breathing room */
+  }
+}
+
+/* Tablet breakpoint */
 @media (max-width: 768px) {
   body {
     font-size: 18px;
@@ -398,7 +385,6 @@ textarea {
     height: 140px;
   }
 
-  /* Let flip-cards grow naturally instead of being locked */
   .slide[data-slide="3"] .flip {
     height: auto;
     min-height: 180px;
@@ -407,13 +393,9 @@ textarea {
   .slide[data-slide="3"] .flip-inner {
     height: auto;
   }
-
-  .grid.cols-3 {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
-/* Phones / very small screens */
+/* Phones */
 @media (max-width: 480px) {
   body {
     font-size: 16px;
@@ -462,7 +444,7 @@ textarea {
   }
 }
 
-/* Make videos responsive everywhere */
+/* Videos responsive always */
 
 video,
 #exitVideo {
