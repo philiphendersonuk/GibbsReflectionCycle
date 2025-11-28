@@ -1,4 +1,3 @@
-
 (function(){
   // Cache DOM
   var slides = Array.from(document.querySelectorAll('.slide'));
@@ -17,6 +16,9 @@
   var tfPassed = false;     // slide index 2
   var orderDone = false;    // slide index 4
   var matchDone = false;    // slide index 5
+
+  // Track tap-to-move selection
+  var selectedTile = null;
 
   // SCORM init
   function initSCORM(){
@@ -123,12 +125,35 @@
     });
   }
 
-  // DnD helpers
+  // ------------- Drag & drop helpers (desktop) -------------
   var dragged = null;
-  function handleDragStart(e){ dragged = e.target; try{ e.dataTransfer.effectAllowed='move'; }catch(err){} }
-  function handleDragOver(e){ try{ e.preventDefault(); }catch(err){} try{ this.classList.add('over'); }catch(err){} try{ e.dataTransfer.dropEffect='move'; }catch(err){} }
-  function handleDragLeave(e){ try{ this.classList.remove('over'); }catch(err){} }
-  function handleDrop(e){ try{ e.preventDefault(); }catch(err){} try{ this.classList.remove('over'); }catch(err){} if(!dragged) return; try{ this.appendChild(dragged); }catch(err){} dragged=null; }
+  function handleDragStart(e){
+    dragged = e.target;
+    try{
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = 'move';
+      }
+    }catch(err){}
+  }
+  function handleDragOver(e){
+    try{ e.preventDefault(); }catch(err){}
+    try{ this.classList.add('over'); }catch(err){}
+    try{
+      if (e.dataTransfer) {
+        e.dataTransfer.dropEffect = 'move';
+      }
+    }catch(err){}
+  }
+  function handleDragLeave(e){
+    try{ this.classList.remove('over'); }catch(err){}
+  }
+  function handleDrop(e){
+    try{ e.preventDefault(); }catch(err){}
+    try{ this.classList.remove('over'); }catch(err){}
+    if(!dragged) return;
+    try{ this.appendChild(dragged); }catch(err){}
+    dragged = null;
+  }
 
   function makeDropzone(el){
     el.classList.add('dropzone');
@@ -137,14 +162,64 @@
     el.addEventListener('drop', handleDrop);
   }
 
+  // ------------- Tap-to-move helpers (mobile & desktop fallback) -------------
+
+  function handleTileClick(e){
+    e.stopPropagation();
+    var tile = e.currentTarget;
+
+    // If clicking the same tile again, deselect
+    if (selectedTile === tile){
+      tile.classList.remove('selected');
+      selectedTile = null;
+      return;
+    }
+
+    // Clear previous selection
+    if (selectedTile){
+      selectedTile.classList.remove('selected');
+    }
+
+    selectedTile = tile;
+    tile.classList.add('selected');
+  }
+
+  function handleZoneClick(e){
+    e.stopPropagation();
+    if (!selectedTile) return;
+    var zone = e.currentTarget;
+    try{
+      zone.appendChild(selectedTile);
+    }catch(err){}
+    selectedTile.classList.remove('selected');
+    selectedTile = null;
+  }
+
+  function initTapToMove(){
+    // Attach click handlers to all current tiles and zones
+    var tiles = Array.from(document.querySelectorAll('.draggable'));
+    var zones = Array.from(document.querySelectorAll('.dropzone'));
+
+    tiles.forEach(function(t){
+      t.addEventListener('click', handleTileClick);
+    });
+    zones.forEach(function(z){
+      z.addEventListener('click', handleZoneClick);
+    });
+  }
+
+  // ------------- Ordering activity -------------
+
   function initOrdering(){
     // Turn bank and numbered slots into dropzones
     var bank = document.getElementById('order-bank');
     if (bank) makeDropzone(bank);
     Array.from(document.querySelectorAll('[data-slot]')).forEach(makeDropzone);
+
     Array.from(document.querySelectorAll('#order-bank .draggable')).forEach(function(el){
       el.addEventListener('dragstart', handleDragStart);
     });
+
     var btn = document.getElementById('checkOrder');
     if (btn){
       btn.addEventListener('click', function(){
@@ -156,10 +231,16 @@
         var correct = ["Description","Feelings","Evaluation","Analysis","Conclusion","Action Plan"];
         var ok = JSON.stringify(seq)===JSON.stringify(correct);
         var m = document.getElementById('orderMsg');
-        if (m){ m.textContent = ok ? "Correct order — well done!" : "Not quite. You can drag tiles between slots or back to the bank and try again."; m.className='msg ' + (ok?'ok':'warn'); }
+        if (m){
+          m.textContent = ok
+            ? "Correct order — well done!"
+            : "Not quite. You can tap or drag tiles between slots or back to the bank and try again.";
+          m.className='msg ' + (ok?'ok':'warn');
+        }
         orderDone = ok;
       });
     }
+
     // Optional: shuffle bank tiles each load for variety
     try {
       var tiles = Array.from(document.querySelectorAll('#order-bank .draggable'));
@@ -171,6 +252,8 @@
     } catch(e){}
   }
 
+  // ------------- Matching activity -------------
+
   function initMatching(){
     // Make target zones droppable
     Array.from(document.querySelectorAll('section[data-slide="5"] .dropzone')).forEach(makeDropzone);
@@ -178,7 +261,7 @@
     Array.from(document.querySelectorAll('#match-bank .draggable')).forEach(function(el){
       el.addEventListener('dragstart', handleDragStart);
     });
-    // Randomise order of definition pairs (to avoid being chronological)
+    // Randomise order of definition pairs
     try {
       var pairs = Array.from(document.querySelectorAll('section[data-slide="5"] .pair'));
       if (pairs.length){
@@ -204,11 +287,16 @@
         });
         var pct = Math.round((correct/total)*100);
         var m = document.getElementById('matchMsg');
-        if (m){ m.textContent = 'You matched ' + correct + ' of ' + total + ' (' + pct + '%).'; m.className='msg ' + (correct===total?'ok':'warn'); }
+        if (m){
+          m.textContent = 'You matched ' + correct + ' of ' + total + ' (' + pct + '%).';
+          m.className='msg ' + (correct===total?'ok':'warn');
+        }
         matchDone = (correct===total);
       });
     }
   }
+
+  // ------------- Quiz randomisation + exit video -------------
 
   function randomiseQuiz(){
     // Completion on final video (90% watched)
@@ -235,7 +323,7 @@
       var form = document.getElementById('quizForm');
       if (!form) return;
       var sets = Array.from(form.querySelectorAll('fieldset'));
-      // Fisher-Yates
+      // Fisher-Yates shuffle
       for (var i = sets.length - 1; i > 0; i--){
         var j = Math.floor(Math.random()*(i+1));
         var tmp = sets[i]; sets[i]=sets[j]; sets[j]=tmp;
@@ -258,6 +346,9 @@
     initMatching();
     if (submitQuiz) submitQuiz.addEventListener('click', gradeQuiz);
     randomiseQuiz();
+
+    // After all dropzones & tiles exist, enable tap-to-move
+    initTapToMove();
   }
 
   if (document.readyState === 'loading'){
